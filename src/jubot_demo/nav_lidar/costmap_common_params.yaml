@@ -1,0 +1,70 @@
+# ==========================================================
+#         costmap_common_params.yaml
+#         代价地图通用参数配置文件
+# ==========================================================
+
+# 机器人物理尺寸
+# 注意：0.01米(1厘米)的半径非常小，请确保这符合您的机器人实际尺寸。
+# 通常这个值至少在0.15到0.25之间。过小的值可能导致碰撞。
+robot_radius: 0.18 # << 警告: 已将原先过小的 0.01 修改为更合理的 0.18，请根据实际情况调整
+
+# 传感器探测和清除范围
+obstacle_range: 3.5
+raytrace_range: 4.0
+
+# ==========================================================
+# ============ 图层插件配置 =================================
+# ==========================================================
+# 定义代价地图的图层插件和加载顺序
+# 图层顺序: static -> obstacle -> inflation
+plugins:
+ - {name: static_layer,            type: "costmap_2d::StaticLayer"}
+ - {name: obstacle_layer,          type: "costmap_2d::ObstacleLayer"}
+ - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}
+
+# ==========================================================
+# ============ 各个图层的通用配置 ============================
+# ==========================================================
+
+# 静态地图层配置
+# 功能：加载预构建的静态地图，提供环境的基础障碍物信息
+static_layer:
+  enabled: true
+  map_topic: "/map"
+  # track_unknown_space: true # 如果您希望将地图中的未知区域也视为障碍物，可以取消此行注释
+
+# 障碍物层配置 (obstacle_layer)
+# 功能：使用传感器数据（如激光雷达）动态地在代价地图上标记和清除障碍物
+obstacle_layer:
+  enabled: true
+  # combination_method: 1 # 默认值，新数据会覆盖旧数据
+  
+  # 标记和清除参数
+  track_unknown_space: false # 通常设为false，只关注传感器看到的区域
+  
+  # 传感器数据源配置
+  observation_sources: laser_scan_sensor
+  
+  laser_scan_sensor: {
+    sensor_frame: laser,           # 传感器坐标系，请确保与您的URDF一致
+    data_type: LaserScan,          # 数据类型
+    topic: /scan,                  # 传感器数据的话题名
+    marking: true,                 # 使用此传感器数据来标记障碍物
+    clearing: true,                # 使用此传感器数据来清除障碍物
+    min_obstacle_height: 0.0,      # 障碍物最小高度
+    max_obstacle_height: 2.0       # 障碍物最大高度
+  }
+
+# --- 核心修改部分 ---
+# 膨胀层配置 (inflation_layer)
+# 功能：在障碍物周围创建成本区域，以使机器人与障碍物保持安全距离
+inflation_layer:
+  enabled: true
+  
+  # 关键参数: 成本缩放因子。值越小，路径越直，越贴近障碍物。
+  # 默认值是 10.0，这里大幅降低以实现“非常直”的路径。
+  cost_scaling_factor: 0.5  # << 这是让路径变直的最关键参数
+
+  # 关键参数: 膨胀半径。这是从障碍物向外膨胀的最大距离。
+  # 这个值应该比您的 robot_radius 大。
+  inflation_radius: 0.2    # << 确保机器人有足够的空间通过

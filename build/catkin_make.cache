@@ -1,0 +1,2 @@
+jubot_demo
+-DCATKIN_DEVEL_PREFIX=/home/xyls/ros1/devel -DCMAKE_INSTALL_PREFIX=/home/xyls/ros1/install -G Unix Makefiles

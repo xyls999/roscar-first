@@ -1,0 +1,51 @@
+<launch>
+    <!-- 主启动文件 - 完整的机器人仿真系统 -->
+    
+    <!-- ============ 机器人初始位置参数配置 ============ -->
+    <!-- Gazebo机器人生成位置参数 -->
+    <arg name="x_pos"     default="1.700000"/>
+    <arg name="y_pos"     default="1.700000"/>
+    <arg name="z_pos"     default="0.1"/>
+    <arg name="yaw_pos"   default="-3.11"/>
+    
+    <!-- AMCL初始位姿参数 -->
+    <arg name="initial_pose_x"     default="1.700000"/>
+    <arg name="initial_pose_y"     default="1.700000"/>
+    <arg name="initial_pose_a"     default="-3.11"/>
+    
+    <!-- 将参数设置到参数服务器（供其他节点使用） -->
+    <param name="robot_x_pos" value="$(arg x_pos)"/>
+    <param name="robot_y_pos" value="$(arg y_pos)"/>
+    <param name="robot_z_pos" value="$(arg z_pos)"/>
+    <param name="robot_yaw_pos" value="$(arg yaw_pos)"/>
+    <param name="amcl/initial_pose_x" value="$(arg initial_pose_x)"/>
+    <param name="amcl/initial_pose_y" value="$(arg initial_pose_y)"/>
+    <param name="amcl/initial_pose_a" value="$(arg initial_pose_a)"/>
+    
+    <!-- ============ 启动各个子系统 ============ -->
+    
+    <!-- 1. 机器人模型和状态发布 -->
+    <include file="$(find jubot_demo)/launch/robot_model.launch"/>
+    
+    <!-- 2. Gazebo世界和机器人生成 -->
+    <include file="$(find jubot_demo)/launch/gazebo_world.launch">
+        <arg name="x_pos" value="$(arg x_pos)"/>
+        <arg name="y_pos" value="$(arg y_pos)"/>
+        <arg name="z_pos" value="$(arg z_pos)"/>
+        <arg name="yaw_pos" value="$(arg yaw_pos)"/>
+    </include>
+    
+    <!-- 3. 导航系统 -->
+    <include file="$(find jubot_demo)/launch/navigation_system.launch">
+        <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+        <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+        <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+    </include>
+        
+    <!-- 4. 可视化 -->
+    <include file="$(find jubot_demo)/launch/visualization.launch"/>
+    
+    <!-- 5. 图像处理模块 -->
+    <include file="$(find jubot_demo)/launch/image.launch"/>
+    
+</launch>

@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/xyls/桌面/ros1/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/xyls/桌面/ros1/src/pkg/include/**",
+        "/home/xyls/桌面/ros1/src/wpb_home/wpb_home_bringup/include/**",
+        "/home/xyls/桌面/ros1/src/wpb_home/wpb_home_tutorials/include/**",
+        "/home/xyls/桌面/ros1/src/wpb_home/wpbh_local_planner/include/**",
+        "/home/xyls/桌面/ros1/src/wpr_simulation/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

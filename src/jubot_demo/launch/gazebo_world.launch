@@ -1,0 +1,22 @@
+<launch>
+    <!-- Gazebo世界和机器人生成launch文件 -->
+    
+    <!-- 声明需要接收的参数 -->
+    <arg name="x_pos"/>
+    <arg name="y_pos"/>
+    <arg name="z_pos"/>
+    <arg name="yaw_pos"/>
+    
+    <!-- 包含Gazebo世界 -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find jubot_demo)/worlds/map_train.world" />
+    </include>
+    
+    <!-- 在Gazebo中生成机器人模型 -->
+    <node pkg="gazebo_ros" type="spawn_model" name="model" 
+          args="-urdf -model mycar -param robot_description
+                -x $(arg x_pos)
+                -y $(arg y_pos)
+                -z $(arg z_pos)
+                -Y $(arg yaw_pos)" />
+</launch>

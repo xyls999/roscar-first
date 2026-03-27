@@ -1,0 +1,13 @@
+<launch>
+    <!-- 机器人模型和状态发布launch文件 -->
+    
+    <!-- 加载机器人模型到参数服务器 -->
+    <param name="robot_description" command="$(find xacro)/xacro $(find jubot_demo)/urdf/xacro/gazebo_car_union.xacro" />
+    
+    <!-- 机器人状态发布器 -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+        <param name="publish_frequency" value="10.0"/>   <!-- 机器人状态发布频率，控制TF更新速度 -->
+        <param name="ignore_timestamp" value="true"/>    <!-- 忽略时间戳检查，确保TF发布稳定性 -->
+        <remap from="joint_states" to="/joint_states_static"/> <!-- 重映射关节状态话题，避免与Gazebo冲突 -->
+    </node>
+</launch>

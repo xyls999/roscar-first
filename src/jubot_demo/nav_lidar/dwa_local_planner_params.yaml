@@ -1,0 +1,57 @@
+# =====================================================================
+#                DWA Local Planner - 高速优化配置
+#           基于您提供的专业建议进行了全面优化和注释
+# =====================================================================
+DWAPlannerROS:
+
+# Robot Configuration Parameters - 机器人动力学限制
+  # --- 速度限制调整 (关键修改) ---
+  max_vel_x: 2.0         # [优化] X轴最大速度 (m/s)，提升至2.0
+  min_vel_x: -3.0      # [可选] 允许机器人后退，-0.5比较安全
+
+  max_vel_y: 0.0          # 对于非全向机器人，通常为0
+  min_vel_y: 0.0
+
+  max_vel_trans: 2.0      # [核心修改] 最大平移速度 (m/s)。这是实际的速度天花板！从0.3提升到2.0
+  min_vel_trans: 0.1      # 机器人移动的最小速度，避免原地抖动
+
+  max_vel_theta: 5.0      # [优化] 最大旋转速度 (rad/s)，提升以获得更灵活的转向
+  min_vel_theta: 1.0     # 最小旋转速度，避免原地不动时无法调整姿态
+
+  # --- 加速度优化 ---
+  acc_lim_x: 4.0          # X轴加速度限制
+  acc_lim_y: 0.0          # Y轴加速度限制
+  acc_lim_trans: 4.0      # [优化] 平移加速度限制，提升以获得更快的响应
+  acc_lim_theta: 15.0     # [优化] 旋转加速度限制，提升转向响应
+
+# Goal Tolerance Parameters - 目标容忍度
+  xy_goal_tolerance: 0.05 # 到达目标点的XY容忍度 (m)
+  yaw_goal_tolerance: 0.05 # 到达目标点的角度容忍度 (rad)
+  latch_xy_goal_tolerance: false # 如果为true, 一旦达到xy容忍度，机器人就会开始原地旋转
+
+# Forward Simulation Parameters - 前向模拟参数
+  sim_time: 0.15          # [优化] 预测未来轨迹的时间 (s)。高速下必须增加，看得更远
+  sim_granularity: 0.025  # 模拟轨迹点的步长 (m)
+  angular_sim_granularity: 0.025 # 模拟轨迹点的角度步长 (rad)
+  
+  # --- 预测和采样优化 ---
+  vx_samples: 5           # [优化] X速度采样点数。增加以在更大的速度范围内找到更优解
+  vy_samples: 1           # 非全向机器人为1
+  vtheta_samples: 25      # [优化] 角速度采样点数。增加以获得更平滑的转向
+
+# Trajectory Scoring Parameters - 轨迹评分参数 (权重)
+# 调整这些权重可以改变机器人的“性格”
+  
+  forward_point_distance: 0.325 # 机器人中心点与评分点之间的距离
+  scaling_speed: 0.25      # 开始缩放机器人足迹的绝对速度
+  max_scaling_factor: 0.2    # 机器人足迹最大缩放比例
+
+# Oscillation Prevention Parameters - 振荡抑制参数
+  oscillation_reset_dist: 0.05 # 机器人移动多远后重置振荡标记
+
+  path_distance_bias: 64.0    # 严格跟随全局路径
+  goal_distance_bias: 24.0  
+# Debugging
+  publish_traj_pc : true
+  publish_cost_grid_pc: true
+  global_frame_id: odom

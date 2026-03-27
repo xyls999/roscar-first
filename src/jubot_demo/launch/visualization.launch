@@ -1,0 +1,6 @@
+<launch>
+    <!-- 可视化launch文件 -->
+    
+    <!-- RViz可视化 -->
+    <node name="rviz" pkg="rviz" type="rviz" args = "-d $(find jubot_demo)/rviz/map_rviz.rviz"/>
+</launch>

@@ -1,0 +1,43 @@
+<launch>
+<node pkg="amcl" type="amcl" name="amcl" output="screen">
+  <!-- 运动模型 -->
+  <param name="odom_model_type" value="diff"/>
+  
+  <!-- 里程计噪声参数 - 差分驱动机器人配置 -->
+  <param name="odom_alpha1" value="0.15"/>  <!-- 旋转到旋转的噪声参数，影响转向精度 -->
+  <param name="odom_alpha2" value="0.1"/>   <!-- 平移到旋转的噪声参数，影响直线运动时的转向误差 -->
+  <param name="odom_alpha3" value="0.6"/>   <!-- 平移到平移的噪声参数，影响直线运动精度 -->
+  <param name="odom_alpha4" value="0.1"/>   <!-- 旋转到平移的噪声参数，影响转向时的平移误差 -->
+  
+  <!-- 变换容忍度参数 -->
+  <param name="transform_tolerance" value="0.15"/>  <!-- TF变换容忍度，处理时间同步延迟 -->
+  
+  <!-- 粒子滤波参数配置 -->
+  <param name="min_particles" value="60"/>   <!-- 最小粒子数量，保证基本定位精度 -->
+  <param name="max_particles" value="600"/>  <!-- 最大粒子数量，平衡精度和计算负载 -->
+  <param name="kld_err" value="0.03"/>       <!-- KLD采样误差阈值，控制粒子数量自适应调整 -->
+  <param name="kld_z" value="0.99"/>         <!-- KLD置信度参数，影响采样策略 -->
+  
+  <!-- 激光雷达参数配置 -->
+  <param name="laser_max_beams" value="60"/>  <!-- 最大激光束数量，影响定位精度和计算负载 -->
+  <param name="laser_z_hit" value="0.7"/>    <!-- 正确测量的权重，影响定位精度 -->
+  <param name="laser_z_short" value="0.1"/>   <!-- 短距离测量的权重，处理激光穿透问题 -->
+  <param name="laser_z_max" value="0.05"/>     <!-- 最大距离测量的权重，处理激光丢失问题 -->
+  <param name="laser_z_rand" value="0.15"/>  <!-- 随机测量的权重，处理噪声和异常值 -->
+  <param name="laser_sigma_hit" value="0.15"/>  <!-- 正确测量的标准差，影响测量精度 -->
+  <param name="laser_lambda_short" value="0.1"/> <!-- 短距离测量的衰减参数 -->
+  <param name="laser_model_type" value="likelihood_field"/> <!-- 激光测量模型类型 -->
+  <param name="laser_likelihood_max_dist" value="1.5"/>  <!-- 似然场最大距离，影响定位范围 -->
+  
+  <!-- 定位更新阈值参数 - 差分驱动机器人配置 -->
+  <param name="update_min_d" value="0.15"/>  <!-- 最小移动距离阈值，触发定位更新 -->
+  <param name="update_min_a" value="0.4"/>   <!-- 最小旋转角度阈值，触发定位更新 -->
+  
+  <!-- 其他系统参数 -->
+  <param name="gui_publish_rate" value="15.0"/>  <!-- 可视化发布频率，用于RViz显示 -->
+  <param name="odom_frame_id" value="odom"/>      <!-- 里程计坐标系ID -->
+  <param name="resample_interval" value="2"/>    <!-- 粒子重采样间隔，控制重采样频率 -->
+  <param name="recovery_alpha_slow" value="0.001"/>  <!-- 慢速恢复参数，用于定位失败时的恢复 -->
+  <param name="recovery_alpha_fast" value="0.1"/>    <!-- 快速恢复参数，用于快速重新定位 -->
+</node>
+</launch>

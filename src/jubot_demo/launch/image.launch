@@ -1,0 +1,48 @@
+<launch>
+    <!-- 图像处理模块 -->
+    <!-- 确保机器人系统完全启动后才启动图像处理 -->
+    
+    <!-- 等待关键话题和服务启动 -->
+    <param name="wait_for_topics" value="true"/>
+    
+    <!-- 等待机器人状态发布器启动 -->
+    <param name="wait_for_robot_state" value="true"/>
+    
+    <!-- 等待导航系统启动 -->
+    <param name="wait_for_navigation" value="true"/>
+    
+    <!-- 启动摄像头捕获节点 -->
+    <node name="camera_capture_node" pkg="jubot_demo" type="image_catch.py" output="screen">
+        <param name="base_path" value="/home/xyls/ros1/images" />
+    </node>
+
+    <!-- 启动A街人员检测器节点 -->
+    <node name="person_detector_a_street" pkg="jubot_demo" type="person_detector_node.py" output="screen">
+        <param name="detector_id" value="1" />
+        <param name="input_image" value="/home/xyls/ros1/images/person/person_1.jpg" />
+        <param name="output_directory" value="/home/xyls/ros1/images/person" />
+        <param name="model_path" value="/home/xyls/ros1/person.onnx" />
+        <param name="street_name" value="A街" />
+        <param name="subscribe_topic" value="/detect/person/one" />
+        <param name="node_startup_message" value="A街人员检测器节点已启动！" />
+    </node>
+
+    <!-- 启动B街人员检测器节点 -->
+    <node name="person_detector_b_street" pkg="jubot_demo" type="person_detector_node.py" output="screen">
+        <param name="detector_id" value="2" />
+        <param name="input_image" value="/home/xyls/ros1/images/person/person_2.jpg" />
+        <param name="output_directory" value="/home/xyls/ros1/images/person" />
+        <param name="model_path" value="/home/xyls/ros1/person.onnx" />
+        <param name="street_name" value="B街" />
+        <param name="subscribe_topic" value="/detect/person/two" />
+        <param name="node_startup_message" value="B街人员检测器节点已启动！" />
+    </node>
+
+    <!-- 启动车牌检测器节点 -->
+    <node name="car_label_detector_node" pkg="jubot_demo" type="car_label_detector_node.py" output="screen">
+        <param name="base_dir" value="/home/xyls/ros1/images/car" />
+        <param name="model_dir" value="/home/xyls/ros1/model_car_label" />
+        <param name="input_image" value="/home/xyls/ros1/images/car/car_1.jpg" />
+    </node>
+
+</launch>

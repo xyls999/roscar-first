@@ -1,0 +1,21 @@
+# costmap_common_params.yaml
+
+# 物理和传感器参数
+robot_radius: 0.01
+
+
+# ==========================================================
+# ============ 核心：确保所有图层都被声明和启用 =============
+# ==========================================================
+plugins:
+ - {name: static_layer,            type: "costmap_2d::StaticLayer"}
+ - {name: obstacle_layer,          type: "costmap_2d::ObstacleLayer"}
+ - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}
+
+# --- 各个图层的详细配置 ---
+
+# 静态地图层 (全局代价地图将使用这个)
+static_layer:
+  enabled: true
+  map_topic: "/map"
+

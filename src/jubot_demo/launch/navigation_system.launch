@@ -1,0 +1,70 @@
+<launch>
+    <!-- 导航系统launch文件 -->
+    
+    <!-- 声明需要接收的参数 -->
+    <arg name="initial_pose_x"/>
+    <arg name="initial_pose_y"/>
+    <arg name="initial_pose_a"/>
+    
+    <!-- 地图服务器 -->
+    <node pkg="map_server" type="map_server" name="map_server" args="$(find jubot_demo)/maps/map_third.yaml"/>
+    
+    <!-- AMCL定位节点 -->
+    <node pkg="amcl" type="amcl" name="amcl">
+        <!-- 使用上面定义的参数设置初始位姿 -->
+        <param name="initial_pose_x"            value="$(arg initial_pose_x)"/>
+        <param name="initial_pose_y"            value="$(arg initial_pose_y)"/>
+        <param name="initial_pose_a"            value="$(arg initial_pose_a)"/>
+    
+        <!-- AMCL粒子滤波参数配置 -->
+        <param name="min_particles" value="80"/>
+        <param name="max_particles" value="800"/>
+        <param name="kld_err" value="0.03"/>
+        <param name="kld_z" value="0.99"/>
+        <param name="update_min_d" value="0.15"/>
+        <param name="update_min_a" value="0.3"/>
+        <param name="transform_tolerance" value="0.5"/>
+        <param name="gui_publish_rate" value="5.0"/>
+        <param name="resample_interval" value="2"/>
+        
+        <!-- 定位恢复参数配置 -->
+        <param name="recovery_alpha_slow" value="0.001"/>
+        <param name="recovery_alpha_fast" value="0.1"/>
+    </node>
+    
+    <!-- 导航系统核心节点 -->
+     <node pkg="move_base" type="move_base" name="move_base" output="screen">
+        <!-- 关键时间同步修复参数 -->
+        <param name="transform_tolerance" value="1.0"/>      <!-- 增加TF容忍度，解决卡顿 -->
+        <param name="planner_frequency" value="5.0"/>        <!-- 降低全局规划频率 -->
+        <param name="controller_frequency" value="10.0"/>    <!-- 降低控制器频率 -->
+        <param name="planner_patience" value="10.0"/>        <!-- 增加规划耐心 -->
+        <param name="controller_patience" value="5.0"/>      <!-- 增加控制耐心 -->
+        
+        <!-- 代价地图时间容忍度 -->
+        <rosparam file="$(find jubot_demo)/nav_lidar/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find jubot_demo)/nav_lidar/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find jubot_demo)/nav_lidar/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find jubot_demo)/nav_lidar/local_costmap_params.yaml" command="load" />
+        
+        <!-- 额外的代价地图时间同步参数 -->
+        <param name="global_costmap/transform_tolerance" value="1.0"/>
+        <param name="local_costmap/transform_tolerance" value="1.0"/>
+        <param name="global_costmap/update_frequency" value="2.0"/>   
+        <param name="local_costmap/update_frequency" value="5.0"/>    
+        <param name="global_costmap/publish_frequency" value="1.0"/>  
+        <param name="local_costmap/publish_frequency" value="2.0"/>   
+        
+        <param name="base_global_planner" value="global_planner/GlobalPlanner" /> 
+        <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+        <rosparam file="$(find jubot_demo)/nav_lidar/dwa_local_planner_params.yaml"/>
+        
+        <!-- DWA规划器时间同步参数 -->
+        <param name="DWAPlannerROS/sim_time" value="0.5"/>           <!-- 增加仿真时间 -->
+        <param name="DWAPlannerROS/controller_frequency" value="10.0"/>
+        <!-- 启用自动恢复 -->
+        <param name="recovery_alpha_slow" value="0.001"/>
+        <param name="recovery_alpha_fast" value="0.1"/>
+ <!-- 匹配控制频率 -->
+    </node>
+</launch>  
